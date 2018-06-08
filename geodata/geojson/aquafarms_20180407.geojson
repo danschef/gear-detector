@@ -1,0 +1,215 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.535226479374608,
+          37.41125971988856,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Aguilas 2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.532473632635036,
+          37.41356163775797,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Aguilas 1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.15772259546216,
+          38.52104280527049,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Pirgia 2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.14824872312991,
+          38.49085579531041,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Delfini 2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.03990628331194,
+          36.94813928781296,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Kalymnos 1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.1526226650551,
+          38.50947507036905,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Pirgia 1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.14034488464743,
+          38.48719631592256,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Delfini 1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.15860918876568,
+          38.4718349452899,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Nireus"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.15102220467174,
+          38.47069805465197,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Nireus"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.26472006308092,
+          38.50267825484425,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Chios, Nireus 3"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.26935161058574,
+          38.49710263634004,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Chios, Nireus 2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.2824444887045,
+          38.49220333174434,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Chios, Nireus 1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.03571638447276,
+          36.94726333381958,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Kalymnos 2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.03317821895008,
+          36.94758767520531,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Kalymnos 3"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.02985317071781,
+          36.94794223685025,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Kalymnos 4"
+      }
+    }
+  ]
+}
