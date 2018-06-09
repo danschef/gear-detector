@@ -1,6 +1,6 @@
-## Creating training data
+## Detect abandoned fishing gear with Pytorch
 
-### Installation requirements
+### Install requirements
 
 1. Install GDAL
 `brew install gdal`
@@ -24,10 +24,10 @@ The following variables might have to be customised:
 GEOJSON_FILE_PATH = './geodata/geojson/aquafarms_20180423.geojson'
 
 # Path to satellite imagery used to crop training data from
-SATELLITE_IMAGERY_PATH = './imagery/planet/aquafarms/'
+SATELLITE_IMAGERY_PATH = './imagery/taining_data/planet/raw/aquafarms'
 
 # Path where processed training data is stored
-PROCESSED_TRAINING_DATA_PATH = './imagery/training_data'
+PROCESSED_TRAINING_DATA_PATH = './imagery/training_data/processed/aquafarms'
 ```
 
 ### Generate negative training data
@@ -49,7 +49,7 @@ With the following command an image will be split into multiple images with a si
 
 ## Convolutional Neuronal Network
 
-### Installation requirements
+### Install requirements
 
 1. Install pytorch
 
@@ -66,5 +66,9 @@ With the following command an image will be split into multiple images with a si
 4. Install matplotlib
 
 `pip install matplotlib`
+
+### Train network and run prediction on test data
+
+`python src/convnet/image_classifier.py`
 
 
