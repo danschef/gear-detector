@@ -125,7 +125,6 @@ def train():
 
     print('Finished Training')
 
-
 #####################################
 # Test the network on the test data
 #####################################
@@ -149,7 +148,6 @@ def predict():
 
         print(f"Predicted: {classes[predicted[0]]}")
 
-
 ################################
 # Load existing net or train
 ################################
@@ -162,7 +160,6 @@ else:
     print('Start training network')
     train()
     torch.save(net.state_dict(), './data/models/gear-cnn')
-
 
 ################################
 # Print some test data
