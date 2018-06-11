@@ -24,7 +24,7 @@ class BoundingBox:
     def to_polygon(self):
         ring = ogr.Geometry(ogr.wkbLinearRing)
 
-        # A rectangle in GeoJSON needs five coordinates: the four corners, 
+        # A rectangle in GeoJSON needs five coordinates: the four corners,
         # and the last one duplicating the first to close the polygon
         ring.AddPoint(self.easting_min, self.northing_max) # left, top
         ring.AddPoint(self.easting_min, self.northing_min) # left, bottom
