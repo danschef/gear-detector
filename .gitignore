@@ -9,6 +9,7 @@ pip-selfcheck.json
 /docs
 /etc
 /imagery/examples
+/imagery/prediction
 /imagery/test_data/raw
 /imagery/training_data/raw
 /include
