@@ -3,7 +3,6 @@
 .env
 pip-selfcheck.json
 
-/api-responses
 /bin
 /data
 /etc
