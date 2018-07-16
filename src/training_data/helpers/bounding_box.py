@@ -6,13 +6,15 @@ from osgeo import osr
 GROUND_SAMPLE_DISTANCE = 4.0
 
 class BoundingBox:
-    def __init__(self, lat, lng):
-        self.calculate(lat, lng)
+    def __init__(self, lat, lng, crs):
+        # https://rasterio.readthedocs.io/en/latest/api/rasterio.crs.html
+        epsg = int(crs.to_dict()['init'].split(':')[1])
+        self.calculate(lat, lng, epsg)
 
-    def calculate(self, lat, lng, size_in_pixel=32):
+    def calculate(self, lat, lng, epsg, size_in_pixel=32):
         diameter = size_in_pixel * GROUND_SAMPLE_DISTANCE
 
-        utm_coords = self.reproject_to_utm_coords(lat, lng)
+        utm_coords = self.reproject_to_utm_coords(lat, lng, epsg)
         easting = utm_coords['coordinates'][0]
         northing = utm_coords['coordinates'][1]
 
@@ -42,14 +44,14 @@ class BoundingBox:
 
     # Reproject to UTM-Coordinates (WGS84)
     @staticmethod
-    def reproject_to_utm_coords(lat, lng):
+    def reproject_to_utm_coords(lat, lng, epsg):
         source = osr.SpatialReference()
         # Google Earth CRS
         source.ImportFromEPSG(4326)
 
         target = osr.SpatialReference()
         # Planet Labs CRS
-        target.ImportFromEPSG(32635)
+        target.ImportFromEPSG(epsg)
 
         transform = osr.CoordinateTransformation(source, target)
 
@@ -59,13 +61,13 @@ class BoundingBox:
         return json.loads(point.ExportToJson())
 
     @staticmethod
-    def reproject_to_lat_lng_coords(geometry):
+    def reproject_to_lat_lng_coords(geometry, epsg):
         source = osr.SpatialReference()
-        # Google Earth CRS
-        source.ImportFromEPSG(32635)
+        # Planet Labs CRS
+        source.ImportFromEPSG(epsg)
 
         target = osr.SpatialReference()
-        # Planet Labs CRS
+        # Google Earth CRS
         target.ImportFromEPSG(4326)
 
         transform = osr.CoordinateTransformation(source, target)
