@@ -1,58 +1,45 @@
-#############
-# http://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html
-#############
-import itertools
+import configparser
 import os
-
-from net import Net
-from image_helper import save_image
+import sys
+from time import gmtime, strftime
 
 import torch
-from torch.autograd import Variable
 import torch.nn as nn
 import torch.optim as optim
+from torch.autograd import Variable
 
-import torchvision
-import torchvision.transforms as transforms
+from net import Net
 
-# Transforms are common image transforms. They can be chained together using Compose
-TRANSFORM = transforms.Compose([
-    transforms.Resize(size=(42, 42)),
-    transforms.ToTensor()
-])
+from image_helper import CLASSES
+from image_helper import save_image
+from image_helper import test_set_loader
+from image_helper import train_set_loader
+from image_helper import validation_set_loader
 
-TRAINING_DATA_PATH = './imagery/training_data/processed'
-TEST_DATA_PATH = './imagery/test_data/processed/eddies'
-TRAINSET = torchvision.datasets.ImageFolder(TRAINING_DATA_PATH, transform=TRANSFORM)
-TESTSET = torchvision.datasets.ImageFolder(TEST_DATA_PATH, transform=TRANSFORM)
-CLASSES = tuple(TRAINSET.classes)
-
-# Training set
-def trainset_loader():
-    return torch.utils.data.DataLoader(TRAINSET, shuffle=True)
-
-# Testing set
-def testset_loader():
-    return torch.utils.data.DataLoader(TESTSET, shuffle=False)
+CONFIG = configparser.ConfigParser()
+CONFIG.read('./src/config.ini')
 
 ###########################################
 # Training Stage
 ###########################################
 
-def train(net):
+def train(net, cycles=50, learning_rate=0.001):
+
+    datetime = strftime("%Y%m%d_%H%M", gmtime())
+    logfile = f"{CONFIG['CNN Paths']['accuracy_log_path']}/{datetime}.log"
 
     ###########################################
     # Loss Function
     ###########################################
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    optimizer = optim.SGD(net.parameters(), lr=learning_rate, momentum=0.9)
 
-    for epoch in range(20):  # loop over the dataset multiple times
+    for epoch in range(cycles):  # loop over the dataset multiple times
 
         running_loss = 0.0
 
-        for i, (images, labels) in enumerate(trainset_loader(), 0):
+        for i, (images, labels) in enumerate(train_set_loader(), 0):
 
             # Wrap images and labels into Variables
             images, labels = Variable(images), Variable(labels)
@@ -76,11 +63,39 @@ def train(net):
             running_loss += loss.data[0]
 
             if i % 100 == 99:    # print every 100 mini-batches
-                print('[%d, %5d] loss: %.3f' %
-                      (epoch + 1, i + 1, running_loss / 100))
+                print('[%d, %5d] loss: %.3f, accuracy: %.3f' %
+                      (epoch + 1, i + 1, running_loss / 100, validate(logfile, net)))
                 running_loss = 0.0
 
     print('Finished Training')
+
+#####################################
+# Validation stage
+#####################################
+
+def validate(logfile, net):
+    dataiter = iter(validation_set_loader())
+
+    hits = 0.0
+
+    for idx, item in enumerate(dataiter):
+        images, labels = item
+
+        outputs = net(Variable(images))
+
+        _, predicted = torch.max(outputs.data, 1)
+
+        if  (labels == predicted[0]).all():
+            hits += 1
+
+    accuracy = hits / (idx + 1)
+    log_accuracy(logfile, accuracy)
+
+    return accuracy
+
+def log_accuracy(filename, accuracy):
+    with open(filename, "a") as file:
+        file.write(str(accuracy)+ '\n')
 
 #####################################
 # Prediction stage
@@ -88,18 +103,16 @@ def train(net):
 
 def predict(net):
 
-    dataiter = itertools.islice(iter(testset_loader()), 5000)
-    # dataiter = iter(testset_loader())
-    prediction_cnt = {'aquafarm': 0, 'cloud': 0, 'vessel': 0, 'water': 0}
-
+    dataiter = iter(test_set_loader())
+    prediction_cnt = {'cloud': 0, 'land': 0, 'nets': 0, 'rock': 0, 'vessel': 0, 'water': 0}
 
     for idx, item in enumerate(dataiter):
+        if idx > int(CONFIG['CNN Prediction']['batch_size']):
+            break
         if idx % 100 == 0:
             print('.', end='', flush=True)
 
         images, _labels = item
-
-        # print(f"GroundTruth: {CLASSES[labels[0]]}")
 
         ##########################################################
         # Feed the images into the CNN and check what it predicts
@@ -109,8 +122,9 @@ def predict(net):
 
         _, predicted = torch.max(outputs.data, 1)
 
-        if CLASSES[predicted[0]] == 'aquafarm':
-            save_image(idx, images)
+        # Save images from prediction for visual check
+        if CLASSES[predicted[0]] == 'nets':
+            save_image(dataiter.dataset.imgs[idx][0])
 
         prediction_cnt[CLASSES[predicted[0]]] += 1
 
@@ -120,16 +134,25 @@ def predict(net):
 # Train network or use existing one for prediction
 ################################################################
 
-def main():
-    net = Net()
+def main(mode=''):
+    image_bands = int(CONFIG['CNN Training']['image_bands'])
+    training_cycles = int(CONFIG['CNN Training']['training_cycles'])
+    learning_rate = float(CONFIG['CNN Training']['learning_rate'])
 
-    if os.path.exists('./data/models/gear-cnn'):
+    if len(sys.argv) > 1:
+        mode = sys.argv[1]
+
+    net = Net(in_channels=image_bands)
+
+    if mode == 'predict' and os.path.exists(CONFIG['CNN Paths']['model_path']):
         print('Use trained network for prediction')
-        net.load_state_dict(torch.load('./data/models/gear-cnn'))
+        net.load_state_dict(torch.load(CONFIG['CNN Paths']['model_path']))
         predict(net)
+    elif mode == 'train':
+        print(f"Start network training for {training_cycles} cycles")
+        train(net, training_cycles, learning_rate)
+        torch.save(net.state_dict(), CONFIG['CNN Paths']['model_path'])
     else:
-        print(f"Train network using data from {TRAINING_DATA_PATH}")
-        train(net)
-        torch.save(net.state_dict(), './data/models/gear-cnn')
+        print('No mode provided.')
 
 main()
