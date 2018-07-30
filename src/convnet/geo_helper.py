@@ -30,14 +30,11 @@ def bounds_to_geojson(bounds, crs):
     polygon = bounds_to_polygon(bounds)
     return BoundingBox.reproject_to_lat_lng_coords(polygon, epsg)
 
-def store_image_bounds(img_path):
+def store_image_bounds(img_path, log_file):
     dataset = rasterio.open(img_path)
 
-    datetime = strftime("%Y%m%d_%H%M", gmtime())
-    json_path = f"{CONFIG['CNN Paths']['predicted_geodata_path']}/{datetime}.json"
-
-    if os.path.exists(json_path):
-        with open(json_path) as file:
+    if os.path.exists(log_file):
+        with open(log_file) as file:
             data = json.load(file)
     else:
         data = {}
@@ -50,5 +47,5 @@ def store_image_bounds(img_path):
         "properties": "Potential ALDFG"
     })
 
-    with open(json_path, 'w') as file:
+    with open(log_file, 'w') as file:
         json.dump(data, file)

@@ -1,7 +1,7 @@
 import configparser
 import os
 import sys
-from time import gmtime, strftime
+from time import localtime, strftime, mktime
 
 import torch
 import torch.nn as nn
@@ -10,6 +10,7 @@ from torch.autograd import Variable
 
 from net import Net
 
+from geo_helper import store_image_bounds
 from image_helper import CLASSES
 from image_helper import save_image
 from image_helper import test_set_loader
@@ -23,9 +24,11 @@ CONFIG.read('./src/config.ini')
 # Training Stage
 ###########################################
 
-def train(net, cycles=50, learning_rate=0.001):
+def train(net, epochs=50, learning_rate=0.001):
+    start_time = strftime('%H:%M:%S', localtime())
+    print(f"Started training at: {start_time}")
 
-    datetime = strftime("%Y%m%d_%H%M", gmtime())
+    datetime = strftime("%Y%m%d_%H%M", localtime())
     logfile = f"{CONFIG['CNN Paths']['accuracy_log_path']}/{datetime}.log"
 
     ###########################################
@@ -35,7 +38,7 @@ def train(net, cycles=50, learning_rate=0.001):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=learning_rate, momentum=0.9)
 
-    for epoch in range(cycles):  # loop over the dataset multiple times
+    for epoch in range(epochs):  # loop over the dataset multiple times
 
         running_loss = 0.0
 
@@ -67,7 +70,8 @@ def train(net, cycles=50, learning_rate=0.001):
                       (epoch + 1, i + 1, running_loss / 100, validate(logfile, net)))
                 running_loss = 0.0
 
-    print('Finished Training')
+    end_time = strftime('%H:%M:%S', localtime())
+    print(f"Finished Training: {end_time}")
 
 #####################################
 # Validation stage
@@ -102,9 +106,22 @@ def log_accuracy(filename, accuracy):
 #####################################
 
 def predict(net):
+    print(f"Prediction started at: {strftime('%H:%M:%S', localtime())}")
 
     dataiter = iter(test_set_loader())
-    prediction_cnt = {'cloud': 0, 'land': 0, 'nets': 0, 'rock': 0, 'vessel': 0, 'water': 0}
+    prediction_cnt = {
+        'cloud': 0,
+        'edge': 0,
+        'land': 0,
+        'nets': 0,
+        'rock': 0,
+        'vessel': 0,
+        'water': 0
+    }
+
+    datetime = strftime("%Y%m%d_%H%M", localtime())
+    prediction_log = f"{CONFIG['CNN Paths']['predicted_geodata_path']}/{datetime}.json"
+    prediction_img_folder = f"{CONFIG['CNN Paths']['predicted_imagery_path']}/{datetime}"
 
     for idx, item in enumerate(dataiter):
         if idx > int(CONFIG['CNN Prediction']['batch_size']):
@@ -124,11 +141,18 @@ def predict(net):
 
         # Save images from prediction for visual check
         if CLASSES[predicted[0]] == 'nets':
-            save_image(dataiter.dataset.imgs[idx][0])
+            image_path = dataiter.dataset.imgs[idx][0]
+            save_image(image_path, prediction_img_folder)
+            store_image_bounds(image_path, prediction_log)
 
         prediction_cnt[CLASSES[predicted[0]]] += 1
 
+    print(f"\nPrediction ended at: {strftime('%H:%M:%S', localtime())}")
     print(f"\nPredicted: {prediction_cnt}")
+
+def model_full_path(path, checkpoint):
+    return f"{path}_{checkpoint}.pt"
+
 
 ################################################################
 # Train network or use existing one for prediction
@@ -136,22 +160,46 @@ def predict(net):
 
 def main(mode=''):
     image_bands = int(CONFIG['CNN Training']['image_bands'])
-    training_cycles = int(CONFIG['CNN Training']['training_cycles'])
+    training_epochs = int(CONFIG['CNN Training']['epochs'])
+    resume_epochs = int(CONFIG['CNN Resume Training']['epochs'])
     learning_rate = float(CONFIG['CNN Training']['learning_rate'])
+    batch_size = CONFIG['CNN Prediction']['batch_size']
 
     if len(sys.argv) > 1:
         mode = sys.argv[1]
 
     net = Net(in_channels=image_bands)
+    model_path = CONFIG['CNN Paths']['model_path']
+    checkpoint = CONFIG['CNN Prediction']['checkpoint']
 
-    if mode == 'predict' and os.path.exists(CONFIG['CNN Paths']['model_path']):
-        print('Use trained network for prediction')
-        net.load_state_dict(torch.load(CONFIG['CNN Paths']['model_path']))
+    # Use network for prediction
+    if mode == 'predict' and os.path.exists(model_full_path(model_path, checkpoint)):
+        print(f"Use trained network {checkpoint} for prediction of max {batch_size} images")
+
+        # Load existing model
+        model = torch.load(model_full_path(model_path, checkpoint))
+        net.load_state_dict(model)
         predict(net)
+
+    # Start training
     elif mode == 'train':
-        print(f"Start network training for {training_cycles} cycles")
-        train(net, training_cycles, learning_rate)
-        torch.save(net.state_dict(), CONFIG['CNN Paths']['model_path'])
+        print(f"Start network training for {training_epochs} epochs")
+        train(net, training_epochs, learning_rate)
+
+        # Save model after training
+        checkpoint = strftime("%Y%m%d_%H%M", localtime())
+        torch.save(net.state_dict(), model_full_path(model_path, checkpoint))
+
+    # Resume training
+    elif mode == 'resume':
+        checkpoint = CONFIG['CNN Resume Training']['checkpoint']
+        print(f"Resume training on Model {checkpoint} for {resume_epochs} epochs")
+
+        # Load existing model and resume training
+        model = torch.load(model_full_path(model_path, checkpoint))
+        net.load_state_dict(model)
+        train(net, resume_epochs, learning_rate)
+        torch.save(net.state_dict(), model_full_path(model_path, checkpoint))
     else:
         print('No mode provided.')
 

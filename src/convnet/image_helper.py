@@ -7,7 +7,6 @@ import torchvision
 import torchvision.transforms as transforms
 
 from PIL import Image
-from geo_helper import store_image_bounds
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read('./src/config.ini')
@@ -56,6 +55,7 @@ def test_set_loader():
 def validation_set_loader():
     return torch.utils.data.DataLoader(VALIDATION_SET, shuffle=False)
 
-def save_image(path):
-    copy(path, f"{CONFIG['CNN Paths']['predicted_imagery_path']}/{os.path.basename(path)}")
-    store_image_bounds(path)
+def save_image(path, img_folder):
+    if not os.path.exists(img_folder):
+        os.mkdir(img_folder)
+    copy(path, f"{img_folder}/{os.path.basename(path)}")

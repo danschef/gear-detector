@@ -14,7 +14,7 @@ import torch.nn.functional as Func
 
 class Net(nn.Module):
 
-    def __init__(self, in_channels=4, num_classes=6):
+    def __init__(self, in_channels=4, num_classes=7):
         super(Net, self).__init__()
         # 1st Convolution Layer (4 image input channels, 8 output channels, 3x3 convolution kernel)
         self.conv1 = nn.Conv2d(in_channels=in_channels, out_channels=8, kernel_size=3)
@@ -44,3 +44,4 @@ class Net(nn.Module):
         output = Func.relu(self.fc1(output))
 
         return output
+        
