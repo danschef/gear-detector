@@ -2,20 +2,35 @@
 
 This project aims to train a convolutional neural network that is capable to detect abandoned fishing gear and macroplastic on high-resolution satellite imagery in marine environments.
 
-## Preparation stage
+### Technical requirements
 
-### 1. Installation requirements
+* Install python3
+`brew install python3`
+
+* Install [pipenv](https://pipenv.readthedocs.io/en/latest/)
+`brew install pipenv`
 
 * Install GDAL
 `brew install gdal`
 
-* Install GDAL Python bindings
-`pip install gdal`
+* Clone repository
+`git clone git@github.com:twei55/gear-detector.git`
 
-* Install Rasterio
-`pip install rasterio`
+* Create a [virtual environment](https://docs.python.org/3/library/venv.html) (Optional but recommended)
+```
+python3 -m venv gear-detector 
+cd gear-detector
+source bin/activate
+```
 
-### 2. Satellite imagery
+* Install project dependencies
+`pipenv install`
+
+Run `PIPENV_SKIP_LOCK=true pipenv install` if you run into issues that [locking packages idles forever](https://github.com/pypa/pipenv/issues/2200) ...
+
+## Preparation stage
+
+### 1. Satellite imagery
 
 * Preparation, training and test stages require appropriate satellite imagery from your preferred provider, so make sure to first request satellite data from your favorite provider before you start
 *  Some public and commercial providers are listed below:
@@ -25,7 +40,7 @@ This project aims to train a convolutional neural network that is capable to det
   * [DigitalGlobe](https://www.digitalglobe.com) (commercial)
   * [Airbus](http://www.intelligence-airbusds.com) (commercial)
 
-### 3. Generate training / validation data from a GEOJSON file
+### 2. Generate training / validation data from a GEOJSON file
 
 * This stage assumes that you have GEOJSON file with a list of features with their corresponding geo position that you want to crop from satellite images for training or validation purposes
 
@@ -68,7 +83,7 @@ geojson_file_path=./data/geo/geojson/*.geojson
 satellite_imagery_path=./imagery/training_data/raw/*.tif
 ```
 
-### 4. Generate training / validation data manually by retiling satellite images 
+### 3. Generate training / validation data manually by retiling satellite images 
 
 * Optionally you can extract training and validation features by retiling satellite images and selecting images manually
 
@@ -76,9 +91,9 @@ satellite_imagery_path=./imagery/training_data/raw/*.tif
 
 * Find and label features in training and validation data
 
-* Furthermore training data can cropped using any GIS application (ArcGIS, QGIS).
+* Furthermore training data can be cropped using any GIS application (ArcGIS, QGIS).
 
-### 5. Generate test data
+### 4. Generate test data
 
 * Crop satellite images into tiles that have the same size as the training data. This can be done with the help of [gdal_retile.py](http://www.gdal.org/gdal_retile.html).
 
@@ -90,21 +105,7 @@ python src/test_data/gdal_retile.py -targetDir imagery/test_data/cropped/planet/
 
 ## Training stage
 
-### 1. Installation requirements
-
-* Install pytorch
-
-`pip install torch`
-
-* Install Torchvision
-
-`pip install torchvision`
-
-* Install Numpy
-
-`pip install numpy`
-
-### 2. Train neural network with the provided training data
+### 1. Train neural network with the provided training data
 
 * The network training can be started by running:
 
@@ -132,7 +133,7 @@ training_data=./imagery/training_data/classified
 validation_data=./imagery/validation_data/classified
 ```
 
-### 3. Resume training of an existing network
+### 2. Resume training of an existing network
 
 The training of a pretrained network can be resumed running:
 
