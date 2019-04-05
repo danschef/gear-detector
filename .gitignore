@@ -4,10 +4,23 @@
 pip-selfcheck.json
 
 /bin
-/data
+# Ignore data folder content but not folders
+/data/**
+!/data/models
+!/data/training
+!/data/training/accuracy
+!/data/.gitkeep 
+!/data/models/.gitkeep 
+!/data/training/.gitkeep 
+!/data/training/accuracy/.gitkeep
+
 /etc
 /imagery/examples
-/imagery/test_data/
+
+# Ignore imagery test data folder content
+/imagery/test_data/**
+!/imagery/test_data/.gitkeep
+
 /imagery/training_data/raw
 /include
 /lib
