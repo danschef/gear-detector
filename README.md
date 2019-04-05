@@ -149,6 +149,8 @@ checkpoint=20180723_1320
 epochs=10
 ```
 
+The checkpoint is a timestamp that is appended to the model name in data/models. Whenever you start a training a new model is created. If you want to resume the training of a specific model, pick the corresponding timestamp and update the above mentioned part in src/config.ini.
+
 ## Prediction Stage
 
 ### 1. Use the trained neural network to classify provided test data
@@ -167,3 +169,5 @@ checkpoint=20180723_1320
 [CNN Image data]
 test_data=./imagery/test_data/cropped/process-data
 ```
+
+The checkpoint is a timestamp that is appended to the model name in data/models. Whenever you start a training a new model is created. If you want to use a trained model for a prediction, make sure to pick the correct timestamp and update the above mentioned part in src/config.ini. 
