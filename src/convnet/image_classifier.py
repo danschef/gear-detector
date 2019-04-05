@@ -63,7 +63,7 @@ def train(net, epochs=50, learning_rate=0.001):
             optimizer.step()
 
             # print statistics
-            running_loss += loss.data[0]
+            running_loss += loss.item()
 
             if i % 100 == 99:    # print every 100 mini-batches
                 print('[%d, %5d] loss: %.3f, accuracy: %.3f' %
