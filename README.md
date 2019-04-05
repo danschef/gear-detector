@@ -170,4 +170,12 @@ checkpoint=20180723_1320
 test_data=./imagery/test_data/cropped/process-data
 ```
 
-The checkpoint is a timestamp that is appended to the model name in data/models. Whenever you start a training a new model is created. If you want to use a trained model for a prediction, make sure to pick the correct timestamp and update the above mentioned part in src/config.ini. 
+The checkpoint is a timestamp that is appended to the model name in data/models. Whenever you start a training a new model is created. If you want to use a trained model for a prediction, make sure to pick the correct timestamp and update the above mentioned part in src/config.ini.
+
+Make sure your test images are located in a *subfolder* of the test_data folder referenced in src/config.ini.
+
+*Wrong*
+./imagery/test_data/cropped/process-data/my-image-001.tif
+
+*Correct*
+./imagery/test_data/cropped/process-data/my-folder/my-image-001.tif
