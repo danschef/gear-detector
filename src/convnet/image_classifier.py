@@ -141,7 +141,7 @@ def predict(net):
 
         # Save images from prediction for visual check
         if CLASSES[predicted[0]] == 'nets':
-            image_path = dataiter.dataset.imgs[idx][0]
+            image_path = dataiter._dataset.imgs[idx][0]
             save_image(image_path, prediction_img_folder)
             store_image_bounds(image_path, prediction_log)
 
