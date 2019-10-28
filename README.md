@@ -19,9 +19,13 @@ This project aims to train a convolutional neural network that is capable to det
 * Install project dependencies
 `pipenv install`
 
-Run `PIPENV_SKIP_LOCK=true pipenv install` if you run into issues that [locking packages idles forever](https://github.com/pypa/pipenv/issues/2200) ...
+### Possible issues
 
-Check your GDAL version with `gdalinfo --version` when installing the dependencies fails and install the correct python package with `pipenv install gdal==2.4.2`. Replace 2.4.2 with your version number if necessary.
+* Run `PIPENV_SKIP_LOCK=true pipenv install` if you run into issues that [locking packages idles forever](https://github.com/pypa/pipenv/issues/2200) ...
+
+* Check your GDAL version with `gdalinfo --version` when installing dependencies fails and install the correct python package with `pipenv install gdal==2.4.2`. (Replace 2.4.2 with your version number if necessary)
+
+* You might get a warning `pj_obj_create: Cannot find proj.db` when running the prediction. You can fix this by exporting the `PROJ_LIB` environment variable to point to the PROJ data directory. You can find the data directory by e.g. running `locate proj.db`.
 
 ## Preparation stage
 
