@@ -19,9 +19,13 @@ pip-selfcheck.json
 
 # Ignore imagery test data folder content
 /imagery/test_data/**
-!/imagery/test_data/.gitkeep
+/imagery/training_data/**
+/imagery/validation_data/**
 
-/imagery/training_data/raw
+!/imagery/test_data/.gitkeep
+!/imagery/training_data/.gitkeep
+!/imagery/validation_data/.gitkeep
+
 /include
 /lib
 /share
