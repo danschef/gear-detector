@@ -17,6 +17,11 @@ def custom_pil_loader(path):
         img = Image.open(file)
         return img.convert(CONFIG['CNN Training']['image_mode'])
 
+
+def custom_geoarray_loader(path):
+    from geoarray import GeoArray
+    return GeoArray(path)[:]
+
 # Transforms are common image transforms. They can be chained together using Compose
 TRANSFORM = transforms.Compose([
     transforms.Resize(size=(42, 42)),
@@ -24,22 +29,22 @@ TRANSFORM = transforms.Compose([
 ])
 
 TRANSFORM_TRAINING = transforms.Compose([
-    transforms.Resize(size=(42, 42)),
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomVerticalFlip(),
-    transforms.ColorJitter(brightness=0.3, contrast=0.3),
+    # transforms.Resize(size=(42, 42)),
+    # transforms.RandomHorizontalFlip(),
+    # transforms.RandomVerticalFlip(),
+    # transforms.ColorJitter(brightness=0.3, contrast=0.3),
     transforms.ToTensor()
 ])
 
 TRAIN_SET = torchvision.datasets.ImageFolder(CONFIG['CNN Image data']['training_data'],
                                              transform=TRANSFORM_TRAINING,
-                                             loader=custom_pil_loader)
+                                             loader=custom_geoarray_loader)
 TEST_SET = torchvision.datasets.ImageFolder(CONFIG['CNN Image data']['test_data'],
                                             transform=TRANSFORM,
-                                            loader=custom_pil_loader)
+                                            loader=custom_geoarray_loader)
 VALIDATION_SET = torchvision.datasets.ImageFolder(CONFIG['CNN Image data']['validation_data'],
                                                   transform=TRANSFORM_TRAINING,
-                                                  loader=custom_pil_loader)
+                                                  loader=custom_geoarray_loader)
 
 CLASSES = tuple(TRAIN_SET.classes)
 
