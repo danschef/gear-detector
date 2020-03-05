@@ -1,0 +1,33 @@
+name: deeplearning_ga
+
+channels: &id1
+  - http://conda.anaconda.org/conda-forge
+
+dependencies:
+  - python=3.*.*
+  - pip
+  - gdal
+  - rasterio
+  - pytorch::pytorch
+  - pytorch::torchvision
+  - numpy
+  - pillow<=6.1  # prevents incompatibility with pillow>6.1 (import error)
+
+  - ipython
+  - jupyter
+
+  # geoarray
+  - gdal
+  - conda-forge::libgdal  # force to use conda-forge for libgdal to avoid package version incompatiblies due to mixed channels
+  - scikit-image
+  - pyproj
+  - geopandas
+  - matplotlib
+  - basemap
+  # - geos>3.7.0   # pinning should not be needed anymore - https://github.com/conda-forge/basemap-feedstock/issues/43
+  - shapely
+  - holoviews
+  - bokeh
+
+  - pip:
+      - geoarray

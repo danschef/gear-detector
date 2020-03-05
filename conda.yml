@@ -1,14 +1,13 @@
 name: deeplearning
 
 channels: &id1
-  - http://conda.anaconda.org/pytorch
   - http://conda.anaconda.org/conda-forge
 
 dependencies:
   - python=3.*.*
   - gdal
   - rasterio
-  - pytorch
-  - torchvision
+  - pytorch::pytorch
+  - pytorch::torchvision
   - numpy
   - pillow<=6.1  # prevents incompatibility with pillow>6.1 (import error)
