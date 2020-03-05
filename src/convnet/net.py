@@ -17,13 +17,13 @@ class Net(nn.Module):
     def __init__(self, in_channels=4, num_classes=7):
         super(Net, self).__init__()
         # 1st Convolution Layer (4 image input channels, 8 output channels, 3x3 convolution kernel)
-        self.conv1 = nn.Conv2d(in_channels=in_channels, out_channels=8, kernel_size=3)
+        self.conv1 = nn.Conv2d(in_channels=in_channels, out_channels=in_channels * 2, kernel_size=3)
 
         # Pooling Layer
         self.pool = nn.MaxPool2d(kernel_size=2)
 
         # 2nd Convolution Layer
-        self.conv2 = nn.Conv2d(in_channels=8, out_channels=16, kernel_size=3)
+        self.conv2 = nn.Conv2d(in_channels=in_channels * 2, out_channels=16, kernel_size=3)
 
         # Apply linear transformations to the incoming data
         # torch.nn.Linear(in_features, out_features, bias=True)
