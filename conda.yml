@@ -10,3 +10,4 @@ dependencies:
   - pytorch
   - torchvision
   - numpy
+  - pillow<=6.1  # prevents incompatibility with pillow>6.1 (import error)
