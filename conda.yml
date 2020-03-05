@@ -1,0 +1,12 @@
+name: deeplearning
+
+channels: &id1
+  - http://conda.anaconda.org/conda-forge
+
+dependencies:
+  - python=3.*.*
+  - gdal
+  - rasterio
+  - pytorch
+  - torchvision
+  - numpy
