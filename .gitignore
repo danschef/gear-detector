@@ -32,3 +32,7 @@ pip-selfcheck.json
 /src/playground
 
 __pycache__
+
+
+# PyCharm
+.idea

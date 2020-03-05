@@ -1,6 +1,7 @@
 name: deeplearning
 
 channels: &id1
+  - http://conda.anaconda.org/pytorch
   - http://conda.anaconda.org/conda-forge
 
 dependencies:
